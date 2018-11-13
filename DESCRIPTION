@@ -1,0 +1,16 @@
+Package: nickr
+Type: Package
+Title: Checking Conditions in Pipelines
+Version: 0.1.0
+Author: Greg Wilson <greg.wilson@rstudio.com>
+Maintainer: Greg Wilson <greg.wilson@rstudio.com>
+Description: Check conditions between pipelines stages without disruption.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports:
+    dplyr (>= 0.7.0),
+    rlang (>= 0.3.0)
+Suggests: 
+    testthat
+RoxygenNote: 6.1.1
