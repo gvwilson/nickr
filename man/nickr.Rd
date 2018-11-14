@@ -5,25 +5,8 @@
 \alias{nickr}
 \alias{nickr-package}
 \title{Check conditions in pipelines, logging messages if tests fail.}
-\usage{
-nickr(.data, cond, message, logger = stop)
-}
-\arguments{
-\item{.data}{Incoming data (omitted if in pipe).}
-
-\item{cond}{Column-wise condition to test.}
-
-\item{message}{User message to display if test fails.}
-
-\item{logger}{Function to call with message (e.g., `warning` or `stop`).}
-}
-\value{
-Input data without modification.
-}
 \description{
 Check conditions in pipelines, logging messages if tests fail.
-
-Check that a condition holds in a pipe, logging if not.
 }
 \author{
 Greg Wilson, \email{greg.wilson@rstudio.com}
