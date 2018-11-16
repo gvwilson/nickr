@@ -10,37 +10,36 @@
 #'
 #' @export
 
-nickr_col <- function(.data, ..., msg = "nickr", logger = stop, active = TRUE) {
+nickr_col <- function(.data, ..., msg = "nickr_col", logger = stop, active = TRUE) {
 
-  # If not active, return immediately.
-  if (!active) {
-    return(invisible(.data))
-  }
+  # Only run check if active.
+  if (active) {
 
-  # Check.
-  conditions <- rlang::enquos(...)
-  specifics <- ""
-  for (cond in conditions) {
-    # Check this condition.
-    cond_result <- all(rlang::eval_tidy(cond, .data))
+    # Check.
+    conditions <- rlang::enquos(...)
+    specifics <- ""
+    for (cond in conditions) {
+      # Check this condition.
+      cond_result <- all(rlang::eval_tidy(cond, .data))
 
-    # Accumulate error messages.
-    if (!cond_result) {
-      this_msg <- deparse(rlang::quo_get_expr(cond))
-      if (specifics == "") {
-        specifics <- this_msg
-      } else {
-        specifics <- paste(specifics, this_msg, sep = ", ")
+      # Accumulate error messages.
+      if (!cond_result) {
+        this_msg <- deparse(rlang::quo_get_expr(cond))
+        if (specifics == "") {
+          specifics <- this_msg
+        } else {
+          specifics <- paste(specifics, this_msg, sep = ", ")
+        }
       }
+    }
+
+    # Report.
+    if (specifics != "") {
+      msg <- paste0(msg, ": ", specifics)
+      logger(msg)
     }
   }
 
-  # Report.
-  if (specifics != "") {
-    msg <- paste0(msg, ": ", specifics)
-    logger(msg)
-  }
-
-  # Return data for the next stage in the pipe.
+  # Always return data for the next stage in the pipe.
   invisible(.data)
 }
