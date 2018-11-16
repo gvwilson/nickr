@@ -4,8 +4,8 @@
 \alias{nickr_col}
 \title{Check that a condition holds on the columns of data between pipe stages.}
 \usage{
-nickr_col(.data, ..., msg = "nickr_col", logger = stop,
-  active = TRUE)
+nickr_col(.data, ..., msg = "nickr_col", active = TRUE,
+  logger = stop)
 }
 \arguments{
 \item{.data}{Incoming data (omitted if in pipe).}
@@ -14,9 +14,9 @@ nickr_col(.data, ..., msg = "nickr_col", logger = stop,
 
 \item{msg}{User message to display if test fails.}
 
-\item{logger}{Function to call with message (e.g., `warning` or `stop`).}
-
 \item{active}{Is this check turned on (default TRUE). Set FALSE to disable test (e.g., in production).}
+
+\item{logger}{Function to call with message (e.g., `warning` or `stop`).}
 }
 \value{
 Input data without modification.

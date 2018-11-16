@@ -4,19 +4,19 @@
 \alias{nickr_row}
 \title{Check that a condition holds on the rows of data between pipe stages.}
 \usage{
-nickr_row(.data, cond, msg = "nickr_row", logger = stop,
-  active = TRUE)
+nickr_row(.data, cond, msg = "nickr_row", active = TRUE,
+  logger = stop)
 }
 \arguments{
 \item{.data}{Incoming data (omitted if in pipe).}
 
-\item{cond}{Condition written as one-sided formula with `.x` as the row and `.y` as the row index, e.g., `~ .x$a < .x$b`}
+\item{cond}{Condition written using column names and `.r` for the row index.}
 
 \item{msg}{User message to display if test fails.}
 
-\item{logger}{Function to call with message (e.g., `warning` or `stop`).}
-
 \item{active}{Is this check turned on (default TRUE). Set FALSE to disable test (e.g., in production).}
+
+\item{logger}{Function to call with message (e.g., `warning` or `stop`).}
 }
 \value{
 Input data without modification.
