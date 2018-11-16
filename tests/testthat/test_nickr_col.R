@@ -148,3 +148,10 @@ test_that("multiple warning-level reports appear", {
                  regexp = "(check b: b < 0)|(check c: c < 0)",
                  all = TRUE)
 })
+
+test_that("external values in conditions are captured correctly", {
+  threshold <- 5.0
+  expect_error(fixture() %>%
+                 nickr_col(a <= threshold, b <= threshold, c <= threshold),
+               regexp = "nickr_col: b <= threshold, c <= threshold")
+})

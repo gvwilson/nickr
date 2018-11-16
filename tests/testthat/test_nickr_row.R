@@ -92,9 +92,15 @@ test_that("a single inactive test is not run", {
 })
 
 test_that("disabling one test does not disable other tests", {
-  fx <- fixture()
-  expect_error(fx %>%
+  expect_error(fixture() %>%
                  nickr_row(FALSE, msg = "check b", active = FALSE) %>%
                  nickr_row(c != 0.3, msg = "check c"),
                regexp = "check c: 3")
+})
+
+test_that("external values in conditions are captured correctly", {
+  threshold <- 20
+  expect_error(fixture() %>%
+                 nickr_row(a <= threshold),
+               regexp = "nickr_row: 3")
 })
