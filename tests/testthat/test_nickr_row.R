@@ -1,13 +1,13 @@
 context("Test checks on rows between pipeline stages")
 
-fixture <- function() {
-  tibble::tribble(
-    ~a,   ~b,  ~c,
-    10,  100,  0.1,
-    20,  200,  0.2,
-    30,  300,  0.3
-  )
-}
+  fixture <- function() {
+    tibble::tribble(
+      ~a,   ~b,  ~c,
+      10,  100,  0.1,
+      20,  200,  0.2,
+      30,  300,  0.3
+    )
+  }
 
 captured_msg <- NULL
 local_logger <- function(text) {
@@ -103,4 +103,10 @@ test_that("external values in conditions are captured correctly", {
   expect_error(fixture() %>%
                  nickr_row(a <= threshold),
                regexp = "nickr_row with 'a <= threshold' rows: 3")
+})
+
+test_that("tests can be applied to the entire row using .row", {
+  expect_error(fixture() %>%
+                 nickr_row(sum(as.double(.row)) <= 300),
+               regexp = "nickr_row with 'sum\\(as.double\\(\\.row\\)\\) <= 300' rows: 3")
 })

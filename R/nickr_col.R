@@ -9,6 +9,24 @@
 #' @return Input data without modification.
 #'
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' data %>% mutate(...) %>%
+#'
+#'   # Always check that age is greater than or equal to 18.
+#'   nickr_col(age >= 18) %>%
+#'
+#'   # Only check that age lies below maximum when not in production.
+#'   nickr_col(age <= max_age, active = !IN.PRODUCTION) %>%
+#'
+#'   # Generate a warning if person_id doesn't match the expected pattern.
+#'   nickr_col(str_detect(person_id, "[A-Z][A-Z]"),
+#'             msg = "Person ID must be 2 letters", logger = warning) %>%
+#'
+#'   # Further processing on unmodified data.
+#'   filter(...)
+#' }
 
 nickr_col <- function(.data, cond, msg = "nickr_col", active = TRUE, logger = stop) {
 
@@ -26,7 +44,8 @@ nickr_col <- function(.data, cond, msg = "nickr_col", active = TRUE, logger = st
     # Accumulate error messages.
     if (any(failures)) {
       cond_txt <- deparse(rlang::quo_get_expr(cond))
-      msg <- paste0(msg, " with '", cond_txt, "' rows: ", paste(augmented$.r[failures], collapse = " "))
+      msg <- paste0(msg, " with '", cond_txt, "' rows: ",
+                    paste(augmented$.r[failures], collapse = " "))
       logger(msg)
     }
   }

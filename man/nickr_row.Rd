@@ -10,7 +10,7 @@ nickr_row(.data, cond, msg = "nickr_row", active = TRUE,
 \arguments{
 \item{.data}{Incoming data (omitted if in pipe).}
 
-\item{cond}{Condition written using column names and `.r` for the row index.}
+\item{cond}{Condition written using column names, \code{.ri}, and \code{.row}.}
 
 \item{msg}{User message to display if test fails.}
 
@@ -22,5 +22,24 @@ nickr_row(.data, cond, msg = "nickr_row", active = TRUE,
 Input data without modification.
 }
 \description{
-Check that a condition holds on the rows of data between pipe stages.
+This is used much less frequently than \code{nickr_col}, since most
+tests are both easier to express and more efficient to run on columns,
+but it does have occasional uses.  See \code{nickr_col} for examples
+of using the \code{active} and \code{logger} arguments.
+}
+\details{
+Each row is augmented with \code{.ri} for the row index and \code{.row}
+to hold the entire original row as a list.
+}
+\examples{
+\dontrun{
+data \%>\% mutate(...) \%>\%
+
+  # Check that at most one field is zero in any row.
+  nickr_row(sum(as.double(.row) == 0) <= 1,
+            msg = "at most one zero per row") \%>\%
+
+  # Further processing on unmodified data.
+  filter(...)
+}
 }
