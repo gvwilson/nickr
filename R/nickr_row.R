@@ -18,17 +18,18 @@ nickr_row <- function(.data, cond, msg = "nickr_row", active = TRUE, logger = st
     # Augment data with row index.
     augmented <- tibble::rowid_to_column(.data, ".r")
 
-    # Check by row, negating so that 'problems' is TRUE where the condition failed.
+    # Check by row (cond is positive, so negate separately to make logic clearer).
     cond <- rlang::enquo(cond)
-    problems <- purrr::pmap_lgl(augmented, function(...) {
+    passes <- purrr::pmap_lgl(augmented, function(...) {
       args <- list(...)
       rlang::eval_tidy(cond, args)
     })
-    problems <- !problems # so that the negation is highly visible
+    failures <- !passes
 
     # Report.
-    if (any(problems)) {
-      msg <- paste0(msg, ": ", paste(augmented$.r[problems], collapse = " "))
+    if (any(failures)) {
+      cond_txt <- deparse(rlang::quo_get_expr(cond))
+      msg <- paste0(msg, " with '", cond_txt, "' rows: ", paste(augmented$.r[failures], collapse = " "))
       logger(msg)
     }
   }

@@ -1,7 +1,7 @@
 #' Check that a condition holds on the columns of data between pipe stages.
 #'
 #' @param .data Incoming data (omitted if in pipe).
-#' @param ... Column-wise condition expressions to test.
+#' @param cond Column-wise condition expression to test.
 #' @param msg User message to display if test fails.
 #' @param active Is this check turned on (default TRUE). Set FALSE to disable test (e.g., in production).
 #' @param logger Function to call with message (e.g., `warning` or `stop`).
@@ -10,32 +10,23 @@
 #'
 #' @export
 
-nickr_col <- function(.data, ..., msg = "nickr_col", active = TRUE, logger = stop) {
+nickr_col <- function(.data, cond, msg = "nickr_col", active = TRUE, logger = stop) {
 
   # Only run check if active.
   if (active) {
 
-    # Check.
-    conditions <- rlang::enquos(...)
-    specifics <- ""
-    for (cond in conditions) {
-      # Check this condition.
-      cond_result <- all(rlang::eval_tidy(cond, .data))
+    # Augment data with row index.
+    augmented <- tibble::rowid_to_column(.data, ".r")
 
-      # Accumulate error messages.
-      if (!cond_result) {
-        this_msg <- deparse(rlang::quo_get_expr(cond))
-        if (specifics == "") {
-          specifics <- this_msg
-        } else {
-          specifics <- paste(specifics, this_msg, sep = ", ")
-        }
-      }
-    }
+    # Check (cond is positive, so negate separately to make logic clearer).
+    cond <- rlang::enquo(cond)
+    passes <- rlang::eval_tidy(cond, augmented)
+    failures <- !passes
 
-    # Report.
-    if (specifics != "") {
-      msg <- paste0(msg, ": ", specifics)
+    # Accumulate error messages.
+    if (any(failures)) {
+      cond_txt <- deparse(rlang::quo_get_expr(cond))
+      msg <- paste0(msg, " with '", cond_txt, "' rows: ", paste(augmented$.r[failures], collapse = " "))
       logger(msg)
     }
   }

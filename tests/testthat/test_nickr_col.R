@@ -39,12 +39,6 @@ test_that("a correct multi-part expression works without error", {
   expect_equal(fx, result)
 })
 
-test_that("multiple correct conditions work without error", {
-  fx <- fixture()
-  result <- nickr_col(fx, a < b, b < c, 0 < c, msg = "should not appear")
-  expect_equal(fx, result)
-})
-
 test_that("a correct simple expression in a pipe works without error", {
   expected <- fixture() %>%
     dplyr::transmute(a)
@@ -74,28 +68,30 @@ test_that("a false expression in a pipe produces a warning and the correct resul
   expect_equal(expected, result)
 })
 
-test_that("all failing conditions show up in the error message in order", {
+test_that("only the first failing condition shows up", {
   msg <- "pipe error"
   fx <- fixture()
   expect_error(fx %>%
-                 nickr_col(a < 0, b < 0, c < 0, msg = msg) %>%
+                 nickr_col(a < 0, msg = msg) %>%
+                 nickr_col(b < 0, msg = msg) %>%
                  dplyr::transmute(a),
-               regexp = "pipe error: a < 0, b < 0, c < 0")
+               regexp = "pipe error with 'a < 0' rows: 1 2")
 })
 
 test_that("only failing conditions show up in the error message", {
   msg <- "pipe error"
   fx <- fixture()
   expect_error(fx %>%
-                 nickr_col(0 < b, c < 0, msg = msg) %>%
+                 nickr_col(0 < b, msg = msg) %>%
+                 nickr_col(c < 0, msg = msg) %>%
                  dplyr::transmute(a),
-               regexp = "pipe error: c < 0")
+               regexp = "pipe error with 'c < 0' rows: 1 2")
 })
 
 test_that("default error message shows up if nothing else provided", {
   fx <- fixture()
   expect_error(fx %>% nickr_col(b < 0),
-               regexp = "nickr_col: b < 0")
+               regexp = "nickr_col with 'b < 0' rows: 1 2")
 })
 
 test_that("user-defined logging function is not called if nothing goes wrong", {
@@ -111,7 +107,7 @@ test_that("user-defined logging function is called if something goes wrong", {
   fx <- fixture()
   result <- fx %>% nickr_col(b < 0, msg = "pipe error", logger = local_logger)
   expect_equal(fx, result)
-  expect_equal(captured_msg, "pipe error: b < 0")
+  expect_equal(captured_msg, "pipe error with 'b < 0' rows: 1 2")
 })
 
 test_that("a single inactive test is not run", {
@@ -129,7 +125,7 @@ test_that("disabling one test does not disable other tests", {
   expect_error(fx %>%
                  nickr_col(b < 0, msg = "check b", active = FALSE) %>%
                  nickr_col(c < 0, msg = "check c"),
-               regexp = "check c: c < 0")
+               regexp = "check c with 'c < 0' rows: 1 2")
 })
 
 test_that("execution halts at the first error-level report", {
@@ -137,7 +133,7 @@ test_that("execution halts at the first error-level report", {
   expect_error(fx %>%
                  nickr_col(b < 0, msg = "check b") %>%
                  nickr_col(c < 0, msg = "check c"),
-               regexp = "check b: b < 0$")
+               regexp = "check b with 'b < 0' rows: 1 2$")
 })
 
 test_that("multiple warning-level reports appear", {
@@ -145,13 +141,13 @@ test_that("multiple warning-level reports appear", {
   expect_warning(fx %>%
                    nickr_col(b < 0, msg = "check b", logger = warning) %>%
                    nickr_col(c < 0, msg = "check c", logger = warning),
-                 regexp = "(check b: b < 0)|(check c: c < 0)",
+                 regexp = "(check b with 'b < 0' rows: 1 2)|(check c with 'c < 0' rows: 1 2)",
                  all = TRUE)
 })
 
 test_that("external values in conditions are captured correctly", {
   threshold <- 5.0
   expect_error(fixture() %>%
-                 nickr_col(a <= threshold, b <= threshold, c <= threshold),
-               regexp = "nickr_col: b <= threshold, c <= threshold")
+                 nickr_col(b <= threshold),
+               regexp = "nickr_col with 'b <= threshold' rows: 2")
 })
