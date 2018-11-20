@@ -1,7 +1,7 @@
 Package: nickr
 Type: Package
 Title: Checking Conditions in Pipelines
-Version: 0.1.0
+Version: 0.2.0.9000
 Author: Greg Wilson <greg.wilson@rstudio.com>
 Maintainer: Greg Wilson <greg.wilson@rstudio.com>
 Description: Check conditions between pipelines stages without disruption.
