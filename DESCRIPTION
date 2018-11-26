@@ -4,7 +4,11 @@ Title: Checking Conditions in Pipelines
 Version: 0.2.0
 Author: Greg Wilson <greg.wilson@rstudio.com>
 Maintainer: Greg Wilson <greg.wilson@rstudio.com>
-Description: Check conditions between pipelines stages without disruption.
+Description: Functions to check data integrity between stages of magrittr
+  pipelines without modifying the data using using expression syntax similar to
+  that used in dplyr's filtering and summarization.  Messages can be customized,
+  individual tests can be switched on and off in place, and error reports can be
+  directed to user-defined outputs.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
