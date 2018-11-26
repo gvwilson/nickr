@@ -1,14 +1,15 @@
 Package: nickr
 Type: Package
-Title: Checking Conditions in Pipelines
+Title: Checking Data Integrity in Pipelines
 Version: 0.2.0
 Author: Greg Wilson <greg.wilson@rstudio.com>
 Maintainer: Greg Wilson <greg.wilson@rstudio.com>
-Description: Functions to check data integrity between stages of magrittr
-  pipelines without modifying the data using using expression syntax similar to
-  that used in dplyr's filtering and summarization.  Messages can be customized,
-  individual tests can be switched on and off in place, and error reports can be
-  directed to user-defined outputs.
+Description: Functions that can be inserted between stages of a magrittr pipeline
+  to check that data satisfies user-specified conditions without modifying that data.
+  Users can specify conditions on rows, columns, or groups as expressions;
+  define their own error messages; control the way that error reports are logged;
+  and enable or disable filters selectively so that they can be left in place in
+  production.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
