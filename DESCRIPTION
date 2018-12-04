@@ -4,7 +4,7 @@ Title: Checking Data Integrity in Pipelines
 Version: 0.2.0
 Author: Greg Wilson <greg.wilson@rstudio.com>
 Maintainer: Greg Wilson <greg.wilson@rstudio.com>
-Description: Functions that can be inserted between stages of a magrittr pipeline
+Description: Functions that can be inserted between stages of a 'magrittr' pipeline
   to check that data satisfies user-specified conditions without modifying that data.
   Users can specify conditions on rows, columns, or groups as expressions;
   define their own error messages; control the way that error reports are logged;

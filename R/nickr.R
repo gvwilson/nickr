@@ -10,30 +10,52 @@
 #' \url{http://www.tdda.info/} and Poisson Consulting's checkr package
 #' \url{https://poissonconsulting.github.io/checkr/}.
 #'
+#' @name nickr
+#' @author Greg Wilson, \email{greg.wilson@rstudio.com}
+#' @docType package
+#'
 #' @examples
 #' \dontrun{
-#' data %>% mutate(...) %>%
+#' # This example is not run because it deliberately raises errors.
+#'
+#' # Settings that checks might rely on.
+#' IN.PRODUCTION <- TRUE
+#' MIN_AGE <- 18
+#' MAX_AGE <- 100
+#'
+#' # Example data for illustrative purposes only.
+#' data <- tribble(
+#'   ~record_id, ~person_id, ~age,
+#'   100,         "alpha",    17,
+#'   200,         "alpha",    34,
+#'   300,         "beta",     21,
+#'   400,         "gamma",    NA,
+#'   500,         "gamma",    26
+#' )
+#'
+#' # How the functions in this package might be used in analysis.
+#' data %>%
 #'
 #'   # Always check that age is greater than or equal to 18.
+#'   # (Would raise error in this example because of record 100.)
 #'   nickr_col(age >= 18) %>%
 #'
 #'   # Only check that age lies between minimum and maximum when not in production.
-#'   nickr_col((min_age <= age) && (age <= max_age), active = !IN.PRODUCTION)
+#'   # (Would not raise an error in this example because 'active' would be FALSE.)
+#'   nickr_col((MIN_AGE <= age) && (age <= MAX_AGE), active = !IN.PRODUCTION)
 #'
-#'   filter(...) %>%
+#'   filter(person_id != "alpha") %>%
 #'
-#'   # Generate a warning if there is more than one NA in any given row.
-#'   nickr_row(sum(is.na(...)) <= 1, logger = warning) %>%
+#'   # Generate a warning if there are any surviving NAs in age.
+#'   # (Would generate a warning in this example because of record 400.)
+#'   nickr_row(is.na(age), logger = warning) %>%
 #'
 #'   group_by(person_id) %>%
 #'
 #'   # Check that there are exactly two records for each person.
+#'   # (Would raise an error in this example because there is only one record for "beta".)
 #'   nickr_group(n() == 2, msg = "Expected two records per person.") %>%
 #'
-#'   ggplot(...)
+#'   summarize(midpoint = mean(age))
 #' }
-#'
-#' @author Greg Wilson, \email{greg.wilson@rstudio.com}
-#' @docType package
-#' @name nickr
 NULL
